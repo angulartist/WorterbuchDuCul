@@ -1,13 +1,19 @@
 from functools import wraps
 from random import choice
+import logging
+from logging.config import fileConfig
 
 import tweepy as tpy
 from tenacity import retry
 from tenacity import wait_fixed
 from tenacity import stop_after_attempt
+from tenacity import after_log
 
 from auth import config
 
+# Logging configuration #
+fileConfig('logs/logging_config.ini')
+logger = logging.getLogger('tpyLogger')
 
 api = config.init_api()
 
@@ -41,8 +47,9 @@ def lemma_picker(fn):
     return wrapper
 
 
-@retry(wait=wait_fixed(10),
-       stop=stop_after_attempt(5))
+@retry(wait=wait_fixed(1),
+       stop=stop_after_attempt(2),
+       after=after_log(logger, logging.DEBUG))
 @lemma_picker
 def tweet(lemma: str) -> None:
     """Tweet a given lemma.
@@ -65,8 +72,9 @@ def tweet(lemma: str) -> None:
     try:
         lemma = lemma.capitalize()
         api.update_status(f'{lemma} du cul.')
-    except Exception:
-        raise Exception
+    except Exception as ex:
+        logger.error(f'Could not tweet {lemma}.')
+        raise Exception('Failed to tweet.')
     else:
         rebuild_lexicon(lemma)
     
@@ -81,7 +89,7 @@ def rebuild_lexicon(last_lemma: str) -> None:
         for lemma in lemmata_:
             lex.write(lemma + '\n')
             
-    print('Rebuilt lexicon.')
+    logger.info(f'Tweeted {last_lemma}. Remaining lemmata: {len(lemmata_)}.')
 
 
 if __name__ == '__main__':
