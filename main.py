@@ -47,8 +47,8 @@ def lemma_picker(fn):
     return wrapper
 
 
-@retry(wait=wait_fixed(1),
-       stop=stop_after_attempt(2),
+@retry(wait=wait_fixed(10),
+       stop=stop_after_attempt(5),
        after=after_log(logger, logging.DEBUG))
 @lemma_picker
 def tweet(lemma: str) -> None:
