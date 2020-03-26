@@ -36,7 +36,7 @@ def lemma_picker(fn):
     """
     @wraps(fn)
     def wrapper():
-        with open(lexicon, 'r') as lex:
+        with open(lexicon, 'r', encoding='utf-8') as lex:
             global lemmata
             lemmata = [line.rstrip('\n') for line in lex.readlines()]
     
@@ -47,7 +47,7 @@ def lemma_picker(fn):
     return wrapper
 
 
-@retry(wait=wait_fixed(10),
+@retry(wait=wait_fixed(5),
        stop=stop_after_attempt(5),
        after=after_log(logger, logging.DEBUG))
 @lemma_picker
@@ -86,7 +86,7 @@ def rebuild_lexicon(last_lemma: str) -> None:
     """
     lemmata_ = list(filter(lambda x: x != last_lemma, lemmata))
     
-    with open(lexicon, 'w') as lex:
+    with open(lexicon, 'w', encoding='utf-8') as lex:
         for lemma in lemmata_:
             lex.write(lemma + '\n')
             
