@@ -80,10 +80,10 @@ def tweet(lemma: str) -> None:
     Using a retry policy in case of network failures.
     Rebuilds lemmata on success.
     """
-    lemma = lemma.capitalize()
+    lemma = lemma.upper()
     
     try:
-        api.update_status(f'{lemma} du cul.')
+        api.update_status(f'{lemma} DU CUL!!!')
     except Exception as ex:
         raise Exception('Failed to tweet.')
     else:
