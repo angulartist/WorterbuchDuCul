@@ -3,7 +3,6 @@ from random import choice
 import logging
 from logging.config import fileConfig
 
-import tweepy as tpy
 from tenacity import retry
 from tenacity import wait_fixed
 from tenacity import stop_after_attempt
@@ -11,7 +10,7 @@ from tenacity import after_log
 
 from auth import config
 
-# Logging configuration #
+# ~~~ Logging configuration ~~~
 fileConfig('logs/logging_config.ini')
 logger = logging.getLogger('tpyLogger')
 
@@ -19,7 +18,7 @@ api = config.init_api()
 
 lexicon = 'datasets/words.txt'
 
-lemmata = []
+lemmata = None
 
 
 class EmptyLexiconException(Exception):
