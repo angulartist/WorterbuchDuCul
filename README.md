@@ -1,7 +1,7 @@
 # WorterbuchDuCul
 Bot du cul. #Plagiat.
 
-You need a crontab.
+You need Airflow (or a cron)
 
 Dataset Credits : http://people.ucalgary.ca/~dcwalker/Dictionary/dict.html
 

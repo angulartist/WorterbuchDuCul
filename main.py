@@ -1,3 +1,5 @@
+from os import path
+
 from functools import wraps
 from random import choice
 import logging
@@ -11,12 +13,20 @@ from tenacity import after_log
 from auth import config
 
 # ~~~ Logging configuration ~~~
-fileConfig('logs/logging_config.ini')
-logger = logging.getLogger('tpyLogger')
+"""LOGGING_INI = path.join(
+    path.dirname(path.abspath(__file__)),
+    'logs/logging_config.ini',
+)"""
+"""fileConfig(LOGGING_INI)
+logger = logging.getLogger('tpyLogger')"""
 
 api = config.init_api()
 
-lexicon = 'datasets/words.txt'
+lexicon = path.join(
+    path.dirname(path.abspath(__file__)),
+    'datasets/words.txt',
+)
+
 
 lemmata = None
 
@@ -47,8 +57,8 @@ def lemma_picker(fn):
 
 
 @retry(wait=wait_fixed(5),
-       stop=stop_after_attempt(5),
-       after=after_log(logger, logging.DEBUG))
+       stop=stop_after_attempt(5))
+       #after=after_log(logger, logging.DEBUG))
 @lemma_picker
 def tweet(lemma: str) -> None:
     """Tweet a given lemma.
@@ -73,7 +83,6 @@ def tweet(lemma: str) -> None:
     try:
         api.update_status(f'{lemma} du cul.')
     except Exception as ex:
-        logger.error(f'Could not tweet {lemma}.')
         raise Exception('Failed to tweet.')
     else:
         rebuild_lexicon(lemma)
@@ -89,7 +98,7 @@ def rebuild_lexicon(last_lemma: str) -> None:
         for lemma in lemmata_:
             lex.write(lemma + '\n')
             
-    logger.info(f'Tweeted {last_lemma}. Remaining lemmata: {len(lemmata_)}.')
+    #logger.info(f'Tweeted {last_lemma}. Remaining lemmata: {len(lemmata_)}.')
 
 
 if __name__ == '__main__':
