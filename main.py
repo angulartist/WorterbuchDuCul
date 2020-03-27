@@ -1,8 +1,8 @@
+import logging
 from os import path
 
 from functools import wraps
 from random import choice
-import logging
 from logging.config import fileConfig
 
 from tenacity import retry
@@ -11,6 +11,8 @@ from tenacity import stop_after_attempt
 from tenacity import after_log
 
 from auth import config
+
+# TODO(@Mo): FIX LOGGING.
 
 # ~~~ Logging configuration ~~~
 """LOGGING_INI = path.join(
@@ -66,7 +68,7 @@ def tweet(lemma: str) -> None:
     Parameters
     ----------
     lemma : str
-            Lemma to tweet.
+        Lemma to tweet.
     
     Raises
     ------
@@ -91,6 +93,11 @@ def tweet(lemma: str) -> None:
 def rebuild_lexicon(last_lemma: str) -> None:
     """Simply removes last lemma from
      the lexicon.
+     
+    Parameters
+    ----------
+    last_lemma : str
+        Last tweeted lemme.
     """
     lemmata_ = list(filter(lambda x: x != last_lemma, lemmata))
     
