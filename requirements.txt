@@ -1,4 +1,4 @@
 tweepy==3.8.0
-apache_airflow==1.10.9
+apache_airflow==1.10.14
 tenacity==4.12.0
 airflow==0.6
